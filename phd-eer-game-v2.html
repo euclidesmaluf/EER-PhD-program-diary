@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PhD Journey Quest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.1);
+      --accent-strong: rgba(56, 189, 248, 0.25);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #22c55e;
+      --border: #1f2937;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.9);
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+      --transition-fast: 160ms ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top left, #1d2748 0, #020617 55%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 32px 12px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1080px;
+      background: linear-gradient(135deg, #020617 0, #020617 40%, #030712 100%);
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 22px 22px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.14) 0, transparent 55%),
+        radial-gradient(circle at 90% 10%, rgba(236, 72, 153, 0.17) 0, transparent 55%);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .app-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+    }
+
+    .title-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 25%, #e5e7eb 0, #9ca3af 30%, #111827 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4),
+        0 12px 25px rgba(15, 23, 42, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title-icon::after {
+      content: "";
+      position: absolute;
+      inset: 52%;
+      background:
+        radial-gradient(circle at 50% 0%, #38bdf8 0, transparent 55%),
+        radial-gradient(circle at 15% 100%, #6366f1 0, transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
+    .title-icon span {
+      position: relative;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: #020617;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .title-main {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .title-main h1 {
+      font-size: 22px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .title-main h1 span {
+      background: linear-gradient(120deg, #e5e7eb, #38bdf8);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .title-main small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.5), #020617);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #4ade80 0, #16a34a 40%, #166534 100%);
+      box-shadow: 0 0 0 1px #22c55e55, 0 0 16px #22c55e80;
+    }
+
+    .tag-soft {
+      border-color: rgba(56, 189, 248, 0.5);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.6));
+      color: #bae6fd;
+    }
+
+    .tag-soft span {
+      font-weight: 600;
+    }
+
+    .overall-progress-card {
+      background: radial-gradient(circle at 0 0, #020617, #020617 40%, #030712 100%);
+      border-radius: 20px;
+      padding: 14px 16px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .overall-progress-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.55) 0, transparent 55%),
+        radial-gradient(circle at 90% 0%, rgba(236, 72, 153, 0.6) 0, transparent 55%);
+      mix-blend-mode: soft-light;
+      opacity: 0.14;
+      pointer-events: none;
+    }
+
+    .overall-left {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      max-width: 420px;
+    }
+
+    .overall-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overall-label span {
+      width: 46px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.8), transparent);
+    }
+
+    .overall-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .overall-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .overall-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+      min-width: 210px;
+    }
+
+    .xp-pill {
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.8);
+    }
+
+    .xp-pill span {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .xp-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 25%, #eab308 0, #f97316 35%, #b45309 100%);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.4),
+        0 0 16px rgba(250, 204, 21, 0.7);
+    }
+
+    .progress-bar {
+      width: 230px;
+      max-width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-track {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        135deg,
+        rgba(31, 41, 55, 0.7) 0,
+        rgba(31, 41, 55, 0.7) 6px,
+        rgba(15, 23, 42, 0.9) 6px,
+        rgba(15, 23, 42, 0.9) 12px
+      );
+      opacity: 0.9;
+    }
+
+    .progress-bar-fill {
+      position: absolute;
+      inset: 0;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #4ade80, #38bdf8);
+      box-shadow:
+        0 0 0 1px rgba(34, 197, 94, 0.6),
+        0 0 12px rgba(34, 197, 94, 0.9);
+      border-radius: inherit;
+      transform-origin: left;
+      transition: width var(--transition-fast);
+    }
+
+    .progress-bar-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 50%, rgba(56, 189, 248, 0.5), transparent 65%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .progress-badge {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+      display: inline-flex;
+      gap: 4px;
+      align-items: baseline;
+    }
+
+    .progress-badge span {
+      font-weight: 600;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 880px) {
+      body {
+        padding: 18px 10px 22px;
+      }
+
+      .app {
+        padding: 16px 14px 20px;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .overall-right {
+        align-items: flex-start;
+      }
+    }
+
+    .timeline-card {
+      background: radial-gradient(circle at 0 0, #020617, #020617 35%, #020617 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      box-shadow: 0 16px 35px rgba(15, 23, 42, 0.85);
+      padding: 14px 14px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .timeline-title span {
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.8), transparent);
+    }
+
+    .timeline-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .path-track {
+      position: relative;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 50%, #111827, #020617 70%);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 12px 12px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .path-year {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      position: relative;
+    }
+
+    .path-year:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.8), transparent);
+      opacity: 0.6;
+    }
+
+    .year-orb {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 25%, #e5e7eb 0, #9ca3af 40%, #111827 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #020617;
+      border: 2px solid rgba(148, 163, 184, 0.8);
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 1), 0 0 0 3px rgba(17, 24, 39, 0.9);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background 200ms ease-out;
+    }
+
+    .year-orb span {
+      position: relative;
+    }
+
+    .year-orb.complete {
+      border-color: rgba(34, 197, 94, 0.9);
+      background: radial-gradient(circle at 30% 20%, #bbf7d0 0, #22c55e 40%, #14532d 100%);
+      box-shadow:
+        0 0 0 1px rgba(21, 128, 61, 0.8),
+        0 0 24px rgba(22, 163, 74, 0.95);
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    .year-orb.current {
+      border-color: rgba(59, 130, 246, 0.9);
+      box-shadow:
+        0 0 0 1px rgba(59, 130, 246, 0.7),
+        0 0 24px rgba(37, 99, 235, 0.9);
+    }
+
+    .year-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .year-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .year-status {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .year-status.complete {
+      color: #4ade80;
+    }
+
+    .year-status.locked {
+      color: #f97373;
+    }
+
+    .year-status.active {
+      color: #38bdf8;
+    }
+
+    .year-star {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 204, 21, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #facc15;
+      background: radial-gradient(circle at 30% 20%, #fef9c3 0, #eab308 45%, #854d0e 100%);
+      box-shadow:
+        0 0 0 1px rgba(113, 63, 18, 0.8),
+        0 0 18px rgba(250, 204, 21, 0.95);
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .checklist-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .year-card {
+      background: radial-gradient(circle at 0 0, #020617, #020617 40%, #020617 100%);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 9px 9px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 180ms ease-out, box-shadow 180ms ease-out,
+        border-color 180ms ease-out, background 180ms ease-out;
+    }
+
+    .year-card::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0;
+      transition: opacity 200ms ease-out;
+      pointer-events: none;
+    }
+
+    .year-card.active {
+      border-color: rgba(56, 189, 248, 0.8);
+      background: radial-gradient(circle at 0 0, rgba(30, 64, 175, 0.5), #020617 55%);
+      box-shadow: 0 15px 35px rgba(30, 64, 175, 0.8);
+    }
+
+    .year-card.active::before {
+      opacity: 1;
+    }
+
+    .year-card.complete {
+      border-color: rgba(34, 197, 94, 0.9);
+      background: radial-gradient(circle at 0 0, rgba(21, 128, 61, 0.7), #020617 60%);
+      box-shadow: 0 14px 32px rgba(22, 163, 74, 0.9);
+    }
+
+    .year-card.locked {
+      opacity: 0.6;
+      filter: grayscale(0.2);
+    }
+
+    .year-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .year-card-title {
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .year-card-title strong {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .year-card-title span {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .year-card-tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+
+    .year-card-tag.complete {
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+
+    .year-card-tag.locked {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .tasks-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 3px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 11px;
+      position: relative;
+    }
+
+    .task-checkbox {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.95),
+        0 0 0 2px transparent;
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .task-checkbox-inner {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      box-shadow: 0 0 0 1px rgba(21, 128, 61, 0.9), 0 0 12px rgba(22, 163, 74, 0.95);
+      transform: scale(0);
+      transition: transform var(--transition-fast);
+    }
+
+    .task-checkbox.checked {
+      border-color: rgba(34, 197, 94, 0.95);
+      background: radial-gradient(circle at 30% 20%, #15803d, #052e16 75%);
+      box-shadow:
+        0 0 0 1px rgba(21, 128, 61, 0.85),
+        0 0 16px rgba(22, 163, 74, 0.95);
+      transform: translateY(-0.5px);
+    }
+
+    .task-checkbox.checked .task-checkbox-inner {
+      transform: scale(1);
+    }
+
+    .task-checkbox.locked {
+      cursor: not-allowed;
+      opacity: 0.7;
+      border-style: dashed;
+      border-color: rgba(248, 113, 113, 0.9);
+    }
+
+    .task-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .task-title {
+      color: #e5e7eb;
+    }
+
+    .task-desc {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 1px;
+      font-size: 9px;
+      color: #6b7280;
+    }
+
+    .task-meta span {
+      padding: 1px 5px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+    }
+
+    .task-meta span.xp {
+      border-color: rgba(250, 204, 21, 0.9);
+      color: #facc15;
+    }
+
+    .task-meta span.type {
+      border-color: rgba(56, 189, 248, 0.9);
+      color: #bae6fd;
+    }
+
+    .task-meta span.deadline {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .year-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .mini-progress {
+      position: relative;
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 1);
+    }
+
+    .mini-progress-fill {
+      position: absolute;
+      inset: 0;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      transition: width var(--transition-fast);
+    }
+
+    .mini-progress-text {
+      margin-left: 6px;
+      min-width: 52px;
+      text-align: right;
+      color: #9ca3af;
+    }
+
+    .sidebar {
+      background: radial-gradient(circle at 0 0, #020617, #020617 40%, #030712 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+      padding: 14px 13px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 110% -10%, rgba(56, 189, 248, 0.5), transparent 65%);
+      opacity: 0.35;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-title span {
+      width: 38px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(148, 163, 184, 0.9), transparent);
+    }
+
+    .sidebar-label {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      position: relative;
+      z-index: 1;
+    }
+
+    .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 20%, #a5b4fc 0, #4f46e5 40%, #020617 100%),
+        radial-gradient(circle at 70% 80%, #fb7185 0, transparent 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 1),
+        0 14px 28px rgba(30, 64, 175, 0.9);
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .profile-info strong {
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .profile-info span {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .profile-level {
+      margin-left: auto;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      color: #bae6fd;
+    }
+
+    .sidebar-section {
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 9px 9px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar-section h3 {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-section h3 span {
+      font-size: 10px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .hint-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .hint-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .hint-bullet {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8 0, #0ea5e9 40%, #0369a1 100%);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.9);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .hint-strong {
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .stat-pill {
+      border-radius: 999px;
+      padding: 4px 7px;
+      font-size: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #9ca3af;
+    }
+
+    .stat-pill strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .stat-pill span {
+      font-size: 9px;
+      opacity: 0.9;
+    }
+
+    .game-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid transparent;
+      background: #111827;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        transform 140ms ease-out, box-shadow 140ms ease-out, color 140ms ease-out;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at 0 0, #38bdf8, #0ea5e9 45%, #0369a1 100%);
+      border-color: rgba(56, 189, 248, 0.95);
+      color: #e5f3ff;
+      text-shadow: 0 1px 0 rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 26px rgba(37, 99, 235, 0.9);
+    }
+
+    .btn-secondary {
+      border-color: rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.96);
+      color: #e5e7eb;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 24px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn-danger {
+      border-color: rgba(248, 113, 113, 0.95);
+      background: rgba(15, 23, 42, 0.96);
+      color: #fecaca;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.9),
+        0 12px 24px rgba(248, 113, 113, 0.7);
+    }
+
+    .pill-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 1px solid rgba(56, 189, 248, 0.8);
+      color: #e5e7eb;
+      box-shadow: 0 14px 35px rgba(15, 23, 42, 0.95);
+    }
+
+    .toast.show {
+      display: inline-flex;
+      animation: fadeInOut 2600ms ease-out forwards;
+    }
+
+    .toast-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #bbf7d0 0, #22c55e 45%, #14532d 100%);
+      box-shadow:
+        0 0 0 1px rgba(21, 128, 61, 0.85),
+        0 0 18px rgba(22, 163, 74, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #e5e7eb;
+    }
+
+    .toast span {
+      font-weight: 500;
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      8% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .pill strong {
+      color: #e5e7eb;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #38bdf8 0, #0ea5e9 40%, #0369a1 100%);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.8);
+    }
+
+    .pill-lock {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .pill-lock .pill-dot {
+      background: radial-gradient(circle at 30% 20%, #fecaca 0, #f97373 45%, #7f1d1d 100%);
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.9);
+    }
+
+    .pill-win {
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+
+    .pill-win .pill-dot {
+      background: radial-gradient(circle at 30% 20%, #bbf7d0 0, #22c55e 45%, #14532d 100%);
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.9);
+    }
+
+    .notice {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .custom-tasks {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(55, 65, 81, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .custom-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .custom-header strong {
+      color: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .custom-header span {
+      font-size: 9px;
+    }
+
+    .custom-input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-input {
+      flex: 1;
+      min-width: 0;
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+      font-size: 10px;
+    }
+
+    .custom-input::placeholder {
+      color: #6b7280;
+    }
+
+    .custom-add-btn {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.9);
+      background: rgba(15, 23, 42, 0.98);
+      color: #bae6fd;
+      font-size: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .custom-add-btn:hover {
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 1),
+        0 8px 16px rgba(15, 23, 42, 0.9);
+      transform: translateY(-0.5px);
+    }
+
+    .custom-add-btn span {
+      font-size: 11px;
+    }
+
+    .custom-table-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 10px;
+    }
+
+    .custom-task-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-task-title {
+      flex: 1;
+      min-width: 0;
+      color: #e5e7eb;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .custom-task-checkbox {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .custom-task-checkbox-inner {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      box-shadow: 0 0 0 1px rgba(21, 128, 61, 0.9), 0 0 12px rgba(22, 163, 74, 0.95);
+      transform: scale(0);
+      transition: transform var(--transition-fast);
+    }
+
+    .custom-task-checkbox.checked {
+      border-color: rgba(34, 197, 94, 0.95);
+      background: radial-gradient(circle at 30% 20%, #15803d, #052e16 75%);
+      box-shadow:
+        0 0 0 1px rgba(21, 128, 61, 0.85),
+        0 0 16px rgba(22, 163, 74, 0.95);
+      transform: translateY(-0.5px);
+    }
+
+    .custom-task-checkbox.checked .custom-task-checkbox-inner {
+      transform: scale(1);
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="app-header">
+      <div class="title-block">
+        <div class="title-icon">
+          <span>P</span>
+        </div>
+        <div class="title-main">
+          <h1><span>PhD Journey Quest</span></h1>
+          <small>Turn your 4‑year PhD roadmap into a small daily game.</small>
+        </div>
+      </div>
+
+      <div class="meta-row">
+        <div class="tag">
+          <div class="tag-dot"></div>
+          Play a few minutes, once a week.
+        </div>
+        <div class="tag tag-soft">
+          <span>Goal</span> Beat the PhD boss battle, year by year.
+        </div>
+      </div>
+    </header>
+
+    <section class="overall-progress-card" aria-label="Overall progress">
+      <div class="overall-left">
+        <div class="overall-label">
+          <span></span>
+          Overall PhD Progress
+        </div>
+        <div class="overall-title" id="overallStatusText">
+          0% complete · Year 1 unlocked
+        </div>
+        <div class="overall-sub">
+          Each checkbox is a tiny quest. Complete all quests for a year to level‑up and unlock the next one.
+        </div>
+      </div>
+      <div class="overall-right">
+        <div class="xp-pill">
+          <div class="xp-dot"></div>
+          <span id="xpText">0 / 0 XP</span>
+        </div>
+        <div class="progress-bar" aria-hidden="true">
+          <div class="progress-bar-track"></div>
+          <div class="progress-bar-fill" id="overallProgressFill"></div>
+          <div class="progress-bar-glow" id="overallProgressGlow"></div>
+        </div>
+        <div class="progress-badge">
+          Year <span id="currentYearLabel">1</span> ·
+          <span id="completedTasksLabel">0</span>/<span id="totalTasksLabel">0</span> quests done
+        </div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <section class="timeline-card" aria-label="4-year roadmap">
+        <header class="timeline-header">
+          <div>
+            <div class="timeline-title">
+              <span></span>
+              4‑Year Timeline
+            </div>
+            <div class="timeline-sub">
+              Start in Year 1. Clear every quest in a year to unlock the next stage.
+            </div>
+          </div>
+          <div class="pill">
+            <div class="pill-dot"></div>
+            <strong>Rule</strong> Finish earlier years before you play with later ones.
+          </div>
+        </header>
+
+        <div class="path-track" id="pathTrack">
+          <div class="path-year" data-year="1">
+            <div class="year-orb current" id="yearOrb1"><span>Y1</span></div>
+            <div class="year-details">
+              <div class="year-label">Year 1 · Foundations</div>
+              <div class="year-status active" id="yearStatus1">Active</div>
+            </div>
+          </div>
+          <div class="path-year" data-year="2">
+            <div class="year-orb" id="yearOrb2"><span>Y2</span></div>
+            <div class="year-details">
+              <div class="year-label">Year 2 · Proposal</div>
+              <div class="year-status locked" id="yearStatus2">Locked</div>
+            </div>
+          </div>
+          <div class="path-year" data-year="3">
+            <div class="year-orb" id="yearOrb3"><span>Y3</span></div>
+            <div class="year-details">
+              <div class="year-label">Year 3 · Deep Work</div>
+              <div class="year-status locked" id="yearStatus3">Locked</div>
+            </div>
+          </div>
+          <div class="path-year" data-year="4">
+            <div class="year-orb" id="yearOrb4"><span>Y4</span></div>
+            <div class="year-details">
+              <div class="year-label">Year 4 · Boss Battle</div>
+              <div class="year-status locked" id="yearStatus4">Locked</div>
+            </div>
+            <div class="year-star" title="Final defense unlocked when all years are complete.">★</div>
+          </div>
+        </div>
+
+        <div class="checklist-grid" id="checklistGrid">
+          <!-- Year cards injected by JavaScript -->
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Player panel and hints">
+        <header class="sidebar-header">
+          <div>
+            <div class="sidebar-title">
+              <span></span>
+              Player Panel
+            </div>
+            <div class="sidebar-label">
+              You can rename and re‑label tasks to match your program later if you want.
+            </div>
+          </div>
+        </header>
+
+        <div class="profile-card">
+          <div class="avatar" id="playerAvatar" aria-hidden="true">P</div>
+          <div class="profile-info">
+            <strong id="playerName">EER PhD Adventurer</strong>
+            <span id="playerTrack">Track: Engineering Education Research (EER)</span>
+          </div>
+          <div class="profile-level" id="playerLevel">Lvl 1 · Rookie</div>
+        </div>
+
+        <section class="sidebar-section" aria-label="How to play">
+          <h3>
+            How to play
+            <span id="playHintStatus">1/3 core habits</span>
+          </h3>
+          <ul class="hint-list">
+            <li>
+              <div class="hint-bullet"></div>
+              <div>
+                <span class="hint-strong">Pick a weekly focus.</span>
+                At the start of each week, tick off 1‑3 realistic quests in the current year.
+              </div>
+            </li>
+            <li>
+              <div class="hint-bullet"></div>
+              <div>
+                <span class="hint-strong">Respect the locks.</span>
+                To keep the game honest, you unlock Year 2 only after clearing all quests in Year 1, and so on.
+              </div>
+            </li>
+            <li>
+              <div class="hint-bullet"></div>
+              <div>
+                <span class="hint-strong">Celebrate small wins.</span>
+                When a year turns green, take a screenshot and celebrate that level‑up.
+              </div>
+            </li>
+          </ul>
+          <div class="stats-row">
+            <div class="stat-pill">
+              <strong id="completedYearsStat">0 / 4</strong>
+              <span>years cleared</span>
+            </div>
+            <div class="stat-pill">
+              <strong id="streakStat">0</strong>
+              <span>days streak</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="sidebar-section" aria-label="Game actions">
+          <h3>
+            Game actions
+            <span>Local to this browser</span>
+          </h3>
+          <div class="game-actions">
+            <button class="btn btn-primary" id="btnNudge">
+              <div class="pill-icon">★</div>
+              Nudge me to keep going
+            </button>
+            <button class="btn btn-secondary" id="btnTodayDone">
+              <div class="pill-icon">✓</div>
+              Mark today as a focused PhD day
+            </button>
+            <button class="btn btn-danger" id="btnReset">
+              <div class="pill-icon">⟳</div>
+              Reset game (clear progress)
+            </button>
+          </div>
+          <div class="notice">
+            This is a simple, offline toy. Your progress is saved only in <strong>this browser</strong>. If you switch
+            computers, you’ll need to re‑create your progress there.
+          </div>
+        </section>
+
+        <section class="sidebar-section" aria-label="Win condition">
+          <h3>
+            Win condition
+            <span>Long game</span>
+          </h3>
+          <p class="notice">
+            When every box is checked and all four year orbs turn green, you’ve finished the main quest. Your actual
+            committee still matters, but this board should make the path feel visible and finite.
+          </p>
+          <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+            <div class="pill pill-win">
+              <div class="pill-dot"></div>
+              <strong>Boss battle:</strong> final defense.
+            </div>
+            <div class="pill pill-lock">
+              <div class="pill-dot"></div>
+              <strong>Extra rule:</strong> no guilt for unchecked boxes; they’re just next week’s quests.
+            </div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <div class="toast-icon">✓</div>
+    <span id="toastMessage">Nice! Year 1 unlocked.</span>
+  </div>
+
+  <script>
+    const gameDefinition = {
+      years: [
+        {
+          id: 1,
+          label: "Year 1 · Launch & Core EER",
+          subtitle: "Start EER core courses, seminars, and sketch your Program of Study.",
+          tasks: [
+            {
+              id: "y1-advisor-meeting",
+              title: "Meet with assigned EER chair",
+              description:
+                "You had at least one focused 1:1 with your assigned EER chair about expectations, funding, and early goals.",
+              xp: 60,
+              type: "Setup",
+              hint: "Use this meeting to clarify your role in research groups and how often you should meet.",
+            },
+            {
+              id: "y1-core-eer-start",
+              title: "Begin EER specialization sequence",
+              description:
+                "You have enrolled in or completed at least one of ENGR 824, ENGR 833, or ENGR 834.",
+              xp: 110,
+              type: "Coursework",
+              hint: "The handbook expects 9 credits of EER specialization: ENGR 824, 833, 834.",
+            },
+            {
+              id: "y1-seminars-801-802",
+              title: "ENGR 801 / 802 seminar experience",
+              description:
+                "You completed ENGR 801 and/or ENGR 802, engaging with EER careers, norms, and community networks.",
+              xp: 90,
+              type: "Seminar",
+              hint: "These 1‑credit seminars help you understand the field and your own path.",
+            },
+            {
+              id: "y1-methods-plan",
+              title: "Select research methods emphasis + first methods course",
+              description:
+                "You chose a quantitative, qualitative, or mixed methods emphasis and enrolled in at least one methods course (EDPS 859, EDPS 900K, or EDPS 870).",
+              xp: 100,
+              type: "Methods",
+              hint: "Handbook requires 12 credits: stats, measurement, and qualitative (plus mixed for the mixed‑methods emphasis).",
+            },
+            {
+              id: "y1-engineering-courses-begin",
+              title: "Start engineering discipline coursework (800/900‑level)",
+              description:
+                "You began the 12 required credit hours of advanced engineering discipline coursework that provide context for your EER work.",
+              xp: 80,
+              type: "Engineering",
+              hint: "These should be 800/900‑level engineering courses, not seminars or thesis credits.",
+            },
+            {
+              id: "y1-annual-eval",
+              title: "First EER Annual Evaluation package",
+              description:
+                "By the third Monday in January, you submitted your EER Graduate Student Progress Report, IDP, CV, and unofficial transcript and discussed feedback with your chair.",
+              xp: 70,
+              type: "Milestone",
+              hint: "This repeats every year; checking this helps you see that the paperwork rhythm is normal.",
+            },
+          ],
+        },
+        {
+          id: 2,
+          label: "Year 2 · Finish Core & Qualifying Exam",
+          subtitle: "Complete required EER and methods courses and pass the Qualifying Exam.",
+          tasks: [
+            {
+              id: "y2-required-courses-done",
+              title: "Finish Qualifying Exam course requirements",
+              description:
+                "You completed ENGR 824, ENGR 834, ENGR 844, EDPS 859, and EDPS 900K with a grade of B or better.",
+              xp: 160,
+              type: "Coursework",
+              hint: "The handbook lists these as required before you can sit the Qualifying Exam.",
+            },
+            {
+              id: "y2-program-of-study-forms",
+              title: "Program of Study & Supervisory Committee approved",
+              description:
+                "Your Program of Study Form and Supervisory Committee Form were approved and submitted to Graduate Studies.",
+              xp: 130,
+              type: "Admin",
+              hint: "These forms must be approved before the Qualifying Exam; your committee should include at least three DBER faculty and one outside representative.",
+            },
+            {
+              id: "y2-qual-intent-package",
+              title: "Qualifying Exam intent + documentation submitted",
+              description:
+                "You sent the Qualifying Exam declaration of intent and required documents (transcript, Program of Study, three research-interest areas, etc.) to the EER Graduate Chair by the stated deadline.",
+              xp: 120,
+              type: "Qualifying Exam",
+              hint: "For August exams, intent is due by April 15; for January exams, by October 1.",
+            },
+            {
+              id: "y2-qual-written-oral",
+              title: "Qualifying Exam (written + oral) completed",
+              description:
+                "You completed the 2‑week written Qualifying Exam (proposal + paper critique) and the 2‑hour oral exam, and received an outcome (pass / partial pass / fail).",
+              xp: 200,
+              type: "Milestone",
+              hint: "Full‑time students starting in Summer/Fall must finish by the end of their second Fall; Spring starters by the end of their second Spring.",
+            },
+            {
+              id: "y2-methods-depth",
+              title: "Round out 12‑credit Research Methods emphasis",
+              description:
+                "You reached (or nearly reached) the 12 credits in your chosen methods emphasis, balancing statistics, measurement, and qualitative (and mixed, if applicable).",
+              xp: 100,
+              type: "Methods",
+              hint: "Use this to track depth in your chosen methods, beyond the bare minimum.",
+            },
+            {
+              id: "y2-annual-eval",
+              title: "Second EER Annual Evaluation package",
+              description:
+                "You submitted the Annual Evaluation materials (report, updated IDP, CV, transcript) and discussed them with your chair.",
+              xp: 70,
+              type: "Milestone",
+              hint: "Seeing the same checkpoint each year makes the paperwork feel like a predictable rhythm, not a surprise.",
+            },
+          ],
+        },
+        {
+          id: 3,
+          label: "Year 3 · Research Pitch, Draft Review & Comprehensive Exam",
+          subtitle: "Shape your dissertation plan, then defend it to become a Candidate.",
+          tasks: [
+            {
+              id: "y3-coursework-near-complete",
+              title: "Most coursework (engineering, electives, methods) completed",
+              description:
+                "You are essentially done with required engineering discipline hours and most electives that support your dissertation and career goals.",
+              xp: 110,
+              type: "Coursework",
+              hint: "Electives should support your dissertation topic and professional goals, not just fill credits.",
+            },
+            {
+              id: "y3-research-pitch",
+              title: "Research Pitch (3‑page outline + meeting) completed",
+              description:
+                "You wrote the 3‑page research pitch (introduction, background, theories, gap, RQs, methods) and met with your full committee for feedback.",
+              xp: 150,
+              type: "Checkpoint",
+              hint: "This checkpoint is meant to check scope, feasibility, and alignment before heavy proposal writing.",
+            },
+            {
+              id: "y3-draft-review",
+              title: "Draft Review of Chapters 1–3 completed",
+              description:
+                "You shared draft Chapters 1–3 (introduction, literature + theory, methods) with each committee member, held 30‑minute feedback meetings, and documented the agreed‑upon revision list.",
+              xp: 160,
+              type: "Checkpoint",
+              hint: "Allow at least two weeks for committee reading before meetings; then your chair helps circulate the final revision list.",
+            },
+            {
+              id: "y3-comps-intent",
+              title: "Comprehensive Exam intent + documentation submitted",
+              description:
+                "At least four weeks before your Comprehensive Exam, you sent the intent email with unofficial transcripts, CV, and draft Application for Admission to Candidacy.",
+              xp: 110,
+              type: "Comprehensive Exam",
+              hint: "The EER Graduate Chair and your Supervisory Committee Chair both need to be in the loop.",
+            },
+            {
+              id: "y3-comps-written-oral",
+              title: "Comprehensive Exam (proposal defense) passed",
+              description:
+                "Your written proposal (Ch. 1–3) was approved for defense, you held the 2‑hour oral Comprehensive Exam, and the committee determined an outcome.",
+              xp: 210,
+              type: "Milestone",
+              hint: "Passing this lets you file the Application for Admission to Candidacy and formally become a PhD Candidate.",
+            },
+            {
+              id: "y3-annual-eval",
+              title: "Third EER Annual Evaluation package",
+              description:
+                "You submitted the annual materials again (progress report, updated IDP, CV, transcript) and discussed feedback with your chair.",
+              xp: 70,
+              type: "Milestone",
+              hint: "Use the IDP to keep adjusting your goals as your dissertation sharpens.",
+            },
+          ],
+        },
+        {
+          id: 4,
+          label: "Year 4 · Dissertation, Defense & Graduation",
+          subtitle: "Write, defend, revise, and submit your EER dissertation.",
+          tasks: [
+            {
+              id: "y4-engr999-contracts",
+              title: "ENGR 999 contracts in place",
+              description:
+                "For each semester of dissertation research credits, you completed and filed an ENGR 999 contract with your advisor.",
+              xp: 120,
+              type: "Admin",
+              hint: "The handbook requires a separate ENGR 999 contract every term you enroll in these credits.",
+            },
+            {
+              id: "y4-program-of-study-updated",
+              title: "Program of Study updated before defense",
+              description:
+                "In the semester before your defense, you updated your Program of Study to match completed coursework and had changes approved.",
+              xp: 130,
+              type: "Admin",
+              hint: "Send the updated list of changes to the EER Graduate Chair so it can be forwarded to Graduate Studies.",
+            },
+            {
+              id: "y4-full-dissertation-draft",
+              title: "Full dissertation draft to readers (≥4 weeks before)",
+              description:
+                "You delivered a full written dissertation draft to the two readers on your Supervisory Committee at least four weeks before the planned defense date.",
+              xp: 170,
+              type: "Writing",
+              hint: "Plan backward from your ideal defense date so readers have enough time.",
+            },
+            {
+              id: "y4-defense-announcement",
+              title: "Public defense announcement shared (≥2 weeks before)",
+              description:
+                "At least two weeks before the final oral exam, you prepared and sent the official defense announcement (title, abstract, time, date, place) to the EER Graduate Chair.",
+              xp: 120,
+              type: "Communication",
+              hint: "This is required so the broader community can attend the open portion of your defense.",
+            },
+            {
+              id: "y4-final-oral-defense",
+              title: "Final oral dissertation defense completed",
+              description:
+                "You presented your work in the two‑hour final defense (open and closed portions) and received an outcome from your Supervisory Committee.",
+              xp: 230,
+              type: "Boss fight",
+              hint: "Remember there is usually still revision work after this meeting, even if the outcome is positive.",
+            },
+            {
+              id: "y4-revisions-and-submission",
+              title: "Revisions completed and dissertation submitted",
+              description:
+                "You addressed minor or major revision requests, responded to committee feedback, and submitted your final dissertation per Graduate Studies requirements.",
+              xp: 200,
+              type: "Milestone",
+              hint: "This is the true end‑of‑game square for the handbook requirements.",
+            },
+          ],
+        },
+      ],
+    };
+
+    const STORAGE_KEY = "phdJourneyQuest_v2";
+    const LEGACY_STORAGE_KEY = "phdJourneyQuest_v1";
+
+    function loadGameState() {
+      try {
+        const raw =
+          window.localStorage.getItem(STORAGE_KEY) ||
+          window.localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (!raw) {
+          return {
+            completedTaskIds: new Set(),
+            streakDays: 0,
+            lastFocusedDay: null,
+            customTasksByYear: {},
+          };
+        }
+        const parsed = JSON.parse(raw);
+        return {
+          completedTaskIds: new Set(parsed.completedTaskIds || []),
+          streakDays: parsed.streakDays || 0,
+          lastFocusedDay: parsed.lastFocusedDay || null,
+          customTasksByYear: parsed.customTasksByYear || {},
+        };
+      } catch (e) {
+        return {
+          completedTaskIds: new Set(),
+          streakDays: 0,
+          lastFocusedDay: null,
+          customTasksByYear: {},
+        };
+      }
+    }
+
+    function saveGameState(state) {
+      try {
+        const data = {
+          completedTaskIds: Array.from(state.completedTaskIds),
+          streakDays: state.streakDays,
+          lastFocusedDay: state.lastFocusedDay,
+          customTasksByYear: state.customTasksByYear || {},
+        };
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (_e) {
+      }
+    }
+
+    function getTodayKey() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10);
+    }
+
+    function computeStats(state) {
+      const years = gameDefinition.years;
+      const totalTasks = years.reduce((acc, year) => acc + year.tasks.length, 0);
+      const completedTasks = years.reduce(
+        (acc, year) => acc + year.tasks.filter((t) => state.completedTaskIds.has(t.id)).length,
+        0
+      );
+      const totalXp = years.reduce(
+        (acc, y) => acc + y.tasks.reduce((sum, t) => sum + (t.xp || 0), 0),
+        0
+      );
+      const earnedXp = years.reduce(
+        (acc, y) =>
+          acc +
+          y.tasks
+            .filter((t) => state.completedTaskIds.has(t.id))
+            .reduce((sum, t) => sum + (t.xp || 0), 0),
+        0
+      );
+
+      const yearCompletion = years.map((year) => {
+        const total = year.tasks.length;
+        const done = year.tasks.filter((t) => state.completedTaskIds.has(t.id)).length;
+        return {
+          yearId: year.id,
+          total,
+          done,
+          complete: done === total && total > 0,
+        };
+      });
+
+      let currentYear = 1;
+      for (const yc of yearCompletion) {
+        if (yc.complete && currentYear < yc.yearId + 1) {
+          currentYear = yc.yearId + 1;
+        } else {
+          break;
+        }
+      }
+      if (currentYear > 4) currentYear = 4;
+
+      const completedYears = yearCompletion.filter((y) => y.complete).length;
+
+      return {
+        totalTasks,
+        completedTasks,
+        totalXp,
+        earnedXp,
+        yearCompletion,
+        currentYear,
+        completedYears,
+      };
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      const msg = document.getElementById("toastMessage");
+      if (!toast || !msg) return;
+
+      msg.textContent = message;
+      toast.classList.remove("show");
+      void toast.offsetWidth;
+      toast.classList.add("show");
+    }
+
+    function updateView(state) {
+      const stats = computeStats(state);
+
+      const totalTasksLabel = document.getElementById("totalTasksLabel");
+      const completedTasksLabel = document.getElementById("completedTasksLabel");
+      const currentYearLabel = document.getElementById("currentYearLabel");
+      const overallStatusText = document.getElementById("overallStatusText");
+      const overallProgressFill = document.getElementById("overallProgressFill");
+      const overallProgressGlow = document.getElementById("overallProgressGlow");
+      const xpText = document.getElementById("xpText");
+      const completedYearsStat = document.getElementById("completedYearsStat");
+      const streakStat = document.getElementById("streakStat");
+
+      const percent = stats.totalTasks ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0;
+      if (totalTasksLabel) totalTasksLabel.textContent = String(stats.totalTasks);
+      if (completedTasksLabel) completedTasksLabel.textContent = String(stats.completedTasks);
+      if (currentYearLabel) currentYearLabel.textContent = String(stats.currentYear);
+
+      if (overallStatusText) {
+        if (percent === 100) {
+          overallStatusText.textContent =
+            "100% complete · Every year cleared · Final boss defeated. Take a real break.";
+        } else {
+          const unlockedYears = stats.completedYears + 1;
+          overallStatusText.textContent = `${percent}% complete · Year ${unlockedYears} unlocked`;
+        }
+      }
+
+      if (overallProgressFill) {
+        overallProgressFill.style.width = `${percent}%`;
+      }
+      if (overallProgressGlow) {
+        overallProgressGlow.style.opacity = percent > 0 ? 1 : 0;
+      }
+
+      if (xpText) {
+        xpText.textContent = `${stats.earnedXp} / ${stats.totalXp} XP`;
+      }
+      if (completedYearsStat) {
+        completedYearsStat.textContent = `${stats.completedYears} / 4`;
+      }
+      if (streakStat) {
+        streakStat.textContent = String(state.streakDays || 0);
+      }
+
+      for (let i = 1; i <= 4; i++) {
+        const orb = document.getElementById(`yearOrb${i}`);
+        const status = document.getElementById(`yearStatus${i}`);
+        const yc = stats.yearCompletion.find((y) => y.yearId === i);
+
+        if (!orb || !status || !yc) continue;
+
+        orb.classList.remove("current", "complete");
+        status.classList.remove("locked", "active", "complete");
+
+        if (yc.complete) {
+          orb.classList.add("complete");
+          status.classList.add("complete");
+          status.textContent = "Cleared";
+        } else if (i === stats.currentYear) {
+          orb.classList.add("current");
+          status.classList.add("active");
+          status.textContent = "Active";
+        } else if (i < stats.currentYear) {
+          status.classList.add("complete");
+          status.textContent = "Cleared";
+        } else {
+          status.classList.add("locked");
+          status.textContent = "Locked";
+        }
+      }
+
+      const grid = document.getElementById("checklistGrid");
+      if (grid && !grid.hasChildNodes()) {
+        for (const year of gameDefinition.years) {
+          const card = document.createElement("article");
+          card.className = "year-card";
+          card.dataset.yearId = String(year.id);
+
+          const header = document.createElement("div");
+          header.className = "year-card-header";
+
+          const title = document.createElement("div");
+          title.className = "year-card-title";
+          const strong = document.createElement("strong");
+          strong.textContent = year.label;
+          const spanSub = document.createElement("span");
+          spanSub.textContent = year.subtitle;
+          title.appendChild(strong);
+          title.appendChild(spanSub);
+
+          const tag = document.createElement("div");
+          tag.className = "year-card-tag";
+          tag.id = `yearTag${year.id}`;
+          tag.textContent = "Locked";
+
+          header.appendChild(title);
+          header.appendChild(tag);
+
+          const list = document.createElement("ul");
+          list.className = "tasks-list";
+
+          for (const task of year.tasks) {
+            const li = document.createElement("li");
+            li.className = "task-item";
+            li.dataset.taskId = task.id;
+
+            const checkbox = document.createElement("button");
+            checkbox.type = "button";
+            checkbox.className = "task-checkbox";
+            checkbox.setAttribute("aria-label", task.title);
+            checkbox.dataset.taskId = task.id;
+            const inner = document.createElement("div");
+            inner.className = "task-checkbox-inner";
+            checkbox.appendChild(inner);
+
+            const labelWrap = document.createElement("div");
+            labelWrap.className = "task-label";
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "task-title";
+            titleDiv.textContent = task.title;
+            const descDiv = document.createElement("div");
+            descDiv.className = "task-desc";
+            descDiv.textContent = task.description;
+            labelWrap.appendChild(titleDiv);
+            labelWrap.appendChild(descDiv);
+
+            const meta = document.createElement("div");
+            meta.className = "task-meta";
+            if (task.xp) {
+              const xp = document.createElement("span");
+              xp.className = "xp";
+              xp.textContent = `+${task.xp} XP`;
+              meta.appendChild(xp);
+            }
+            if (task.type) {
+              const type = document.createElement("span");
+              type.className = "type";
+              type.textContent = task.type;
+              meta.appendChild(type);
+            }
+            if (task.hint) {
+              const hint = document.createElement("span");
+              hint.className = "deadline";
+              hint.textContent = "Hint: hover for details";
+              hint.title = task.hint;
+              meta.appendChild(hint);
+            }
+            labelWrap.appendChild(meta);
+
+            li.appendChild(checkbox);
+            li.appendChild(labelWrap);
+            list.appendChild(li);
+          }
+
+          const customBlock = document.createElement("div");
+          customBlock.className = "custom-tasks";
+          customBlock.dataset.yearId = String(year.id);
+
+          const customHeader = document.createElement("div");
+          customHeader.className = "custom-header";
+          const chLeft = document.createElement("div");
+          chLeft.innerHTML = "<strong>Your own tasks</strong><span>Examples: departmental forms, local deadlines, etc.</span>";
+          const chRight = document.createElement("button");
+          chRight.type = "button";
+          chRight.className = "custom-add-btn";
+          chRight.dataset.yearId = String(year.id);
+          chRight.innerHTML = "<span>＋</span>Add row";
+          customHeader.appendChild(chLeft);
+          customHeader.appendChild(chRight);
+
+          const inputRow = document.createElement("div");
+          inputRow.className = "custom-input-row";
+          const input = document.createElement("input");
+          input.className = "custom-input";
+          input.type = "text";
+          input.placeholder = "Add a requirement for this year (e.g., 'Department progress form submitted')";
+          input.dataset.yearId = String(year.id);
+          inputRow.appendChild(input);
+
+          const tableList = document.createElement("ul");
+          tableList.className = "custom-table-list";
+          tableList.dataset.yearId = String(year.id);
+
+          customBlock.appendChild(customHeader);
+          customBlock.appendChild(inputRow);
+          customBlock.appendChild(tableList);
+
+          const footer = document.createElement("div");
+          footer.className = "year-footer";
+
+          const miniProgress = document.createElement("div");
+          miniProgress.className = "mini-progress";
+          const miniFill = document.createElement("div");
+          miniFill.className = "mini-progress-fill";
+          miniFill.id = `yearMiniFill${year.id}`;
+          miniProgress.appendChild(miniFill);
+
+          const miniText = document.createElement("div");
+          miniText.className = "mini-progress-text";
+          miniText.id = `yearMiniText${year.id}`;
+          miniText.textContent = "0 / " + year.tasks.length;
+
+          footer.appendChild(miniProgress);
+          footer.appendChild(miniText);
+
+          card.appendChild(header);
+          card.appendChild(list);
+          card.appendChild(customBlock);
+          card.appendChild(footer);
+
+          grid.appendChild(card);
+        }
+
+        grid.addEventListener("click", (event) => {
+          const target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+
+          const addBtn = target.closest(".custom-add-btn");
+          if (addBtn) {
+            const yearId = parseInt(addBtn.dataset.yearId || "0", 10);
+            if (!yearId) return;
+            const container = addBtn.closest(".custom-tasks");
+            if (!container) return;
+            const input = container.querySelector(".custom-input");
+            if (!(input instanceof HTMLInputElement)) return;
+            const title = input.value.trim();
+            if (!title) {
+              showToast("Type a short task name first.");
+              return;
+            }
+            const stateNow = loadGameState();
+            if (!stateNow.customTasksByYear) stateNow.customTasksByYear = {};
+            if (!Array.isArray(stateNow.customTasksByYear[yearId])) {
+              stateNow.customTasksByYear[yearId] = [];
+            }
+            const newTask = {
+              id: `c-${yearId}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+              title,
+              done: false,
+            };
+            stateNow.customTasksByYear[yearId].push(newTask);
+            input.value = "";
+            saveGameState(stateNow);
+            updateView(stateNow);
+            showToast("Custom task added to this year.");
+            return;
+          }
+
+          const customCheckbox = target.closest(".custom-task-checkbox");
+          if (customCheckbox) {
+            const yearId = parseInt(customCheckbox.dataset.yearId || "0", 10);
+            const taskId = customCheckbox.dataset.customId;
+            if (!yearId || !taskId) return;
+            const stateNow = loadGameState();
+            if (!stateNow.customTasksByYear) stateNow.customTasksByYear = {};
+            const list = stateNow.customTasksByYear[yearId] || [];
+            const item = list.find((t) => t.id === taskId);
+            if (!item) return;
+            item.done = !item.done;
+            saveGameState(stateNow);
+            updateView(stateNow);
+            showToast(item.done ? "Nice, custom task checked." : "Custom task unchecked.");
+            return;
+          }
+
+          const checkbox = target.closest(".task-checkbox");
+          if (!checkbox) return;
+          const taskId = checkbox.dataset.taskId;
+          if (!taskId) return;
+
+          const currentState = loadGameState();
+          const statsNow = computeStats(currentState);
+
+          const parentLi = checkbox.closest(".task-item");
+          if (!parentLi) return;
+          const yearCard = parentLi.closest(".year-card");
+          if (!yearCard) return;
+          const yearId = parseInt(yearCard.dataset.yearId || "0", 10);
+          if (!yearId) return;
+
+          if (yearId > statsNow.currentYear) {
+            showToast("Clear earlier years to unlock this one.");
+            return;
+          }
+
+          const isLocked = checkbox.classList.contains("locked");
+          if (isLocked) return;
+
+          const already = currentState.completedTaskIds.has(taskId);
+          if (already) {
+            currentState.completedTaskIds.delete(taskId);
+          } else {
+            currentState.completedTaskIds.add(taskId);
+          }
+          saveGameState(currentState);
+          updateView(currentState);
+
+          if (!already) {
+            const newStats = computeStats(currentState);
+            const yc = newStats.yearCompletion.find((y) => y.yearId === yearId);
+            if (yc && yc.complete) {
+              if (yearId < 4) {
+                showToast(`Nice! Year ${yearId} cleared. Year ${yearId + 1} is now unlocked.`);
+              } else {
+                showToast("Final boss down. PhD main quest: complete.");
+              }
+            } else {
+              showToast("Quest complete. Keep going.");
+            }
+          }
+        });
+      }
+
+      for (const yc of stats.yearCompletion) {
+        const miniFill = document.getElementById(`yearMiniFill${yc.yearId}`);
+        const miniText = document.getElementById(`yearMiniText${yc.yearId}`);
+        const tag = document.getElementById(`yearTag${yc.yearId}`);
+        const card = document.querySelector(`.year-card[data-year-id="${yc.yearId}"]`);
+
+        const pct = yc.total ? Math.round((yc.done / yc.total) * 100) : 0;
+        if (miniFill) {
+          miniFill.style.width = `${pct}%`;
+        }
+        if (miniText) {
+          miniText.textContent = `${yc.done} / ${yc.total}`;
+        }
+        if (tag) {
+          tag.classList.remove("complete", "locked");
+          if (yc.complete) {
+            tag.classList.add("complete");
+            tag.textContent = "Year cleared";
+          } else if (yc.yearId > stats.currentYear) {
+            tag.classList.add("locked");
+            tag.textContent = "Locked";
+          } else if (yc.yearId < stats.currentYear) {
+            tag.classList.add("complete");
+            tag.textContent = "Cleared";
+          } else {
+            tag.textContent = "Current year";
+          }
+        }
+        if (card instanceof HTMLElement) {
+          card.classList.remove("active", "complete", "locked");
+          if (yc.complete) {
+            card.classList.add("complete");
+          } else if (yc.yearId === stats.currentYear) {
+            card.classList.add("active");
+          } else if (yc.yearId > stats.currentYear) {
+            card.classList.add("locked");
+          }
+        }
+      }
+
+      const checkboxes = document.querySelectorAll(".task-checkbox");
+      checkboxes.forEach((cb) => {
+        if (!(cb instanceof HTMLElement)) return;
+        const taskId = cb.dataset.taskId;
+        if (!taskId) return;
+        const isDone = state.completedTaskIds.has(taskId);
+        cb.classList.toggle("checked", isDone);
+
+        const li = cb.closest(".task-item");
+        const yearCard = li && li.closest(".year-card");
+        const yearId = yearCard ? parseInt(yearCard.dataset.yearId || "0", 10) : 0;
+        const statsNow = computeStats(state);
+        const lockedByYear = yearId && yearId > statsNow.currentYear;
+        cb.classList.toggle("locked", !!lockedByYear);
+      });
+
+      const customLists = document.querySelectorAll(".custom-table-list");
+      customLists.forEach((ul) => {
+        if (!(ul instanceof HTMLElement)) return;
+        const yearId = parseInt(ul.dataset.yearId || "0", 10);
+        if (!yearId) return;
+        const stateTasks = (state.customTasksByYear && state.customTasksByYear[yearId]) || [];
+        ul.innerHTML = "";
+        stateTasks.forEach((task) => {
+          const li = document.createElement("li");
+          li.className = "custom-task-row";
+          const cb = document.createElement("button");
+          cb.type = "button";
+          cb.className = "custom-task-checkbox";
+          cb.dataset.yearId = String(yearId);
+          cb.dataset.customId = task.id;
+          const inner = document.createElement("div");
+          inner.className = "custom-task-checkbox-inner";
+          cb.appendChild(inner);
+          if (task.done) {
+            cb.classList.add("checked");
+          }
+          const title = document.createElement("div");
+          title.className = "custom-task-title";
+          title.textContent = task.title;
+          li.appendChild(cb);
+          li.appendChild(title);
+          ul.appendChild(li);
+        });
+      });
+
+      const playerLevel = document.getElementById("playerLevel");
+      if (playerLevel) {
+        let levelLabel = "Lvl 1 · Rookie";
+        if (stats.completedYears === 1) levelLabel = "Lvl 2 · Candidacy unlocked";
+        if (stats.completedYears === 2) levelLabel = "Lvl 3 · Deep worker";
+        if (stats.completedYears === 3) levelLabel = "Lvl 4 · Almost there";
+        if (stats.completedYears === 4) levelLabel = "Lvl 5 · PhD boss slayer";
+        playerLevel.textContent = levelLabel;
+      }
+    }
+
+    function markTodayFocused(state) {
+      const today = getTodayKey();
+      if (state.lastFocusedDay === today) {
+        showToast("You already logged today as a focused PhD day.");
+        return state;
+      }
+      if (!state.lastFocusedDay) {
+        state.streakDays = 1;
+      } else {
+        const prev = new Date(state.lastFocusedDay + "T00:00:00");
+        const now = new Date(today + "T00:00:00");
+        const diffDays = Math.round((now - prev) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+          state.streakDays = (state.streakDays || 0) + 1;
+        } else if (diffDays === 0) {
+        } else {
+          state.streakDays = 1;
+        }
+      }
+      state.lastFocusedDay = today;
+      saveGameState(state);
+      updateView(state);
+      showToast(`Nice. Today counts. Streak: ${state.streakDays} day(s).`);
+      return state;
+    }
+
+    function resetGame() {
+      if (!window.confirm("Reset all progress on this board? (This only affects this browser.)")) return;
+      const fresh = {
+        completedTaskIds: new Set(),
+        streakDays: 0,
+        lastFocusedDay: null,
+        customTasksByYear: {},
+      };
+      saveGameState(fresh);
+      updateView(fresh);
+      showToast("Progress cleared. You can replay the whole quest.");
+    }
+
+    function setupActions() {
+      const btnNudge = document.getElementById("btnNudge");
+      const btnTodayDone = document.getElementById("btnTodayDone");
+      const btnReset = document.getElementById("btnReset");
+
+      if (btnNudge) {
+        btnNudge.addEventListener("click", () => {
+          const lines = [
+            "Pick just one tiny box you can honestly check this week.",
+            "Future‑you will be very kind to present‑you for clearing one small quest today.",
+            "You don’t have to feel motivated. You only need to clear the next square.",
+            "This board is finite; your job is just to keep nudging forward.",
+          ];
+          const line = lines[Math.floor(Math.random() * lines.length)];
+          showToast(line);
+        });
+      }
+      if (btnTodayDone) {
+        btnTodayDone.addEventListener("click", () => {
+          const state = loadGameState();
+          markTodayFocused(state);
+        });
+      }
+      if (btnReset) {
+        btnReset.addEventListener("click", () => resetGame());
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const initialState = loadGameState();
+      updateView(initialState);
+      setupActions();
+    });
+  </script>
+</body>
+</html>
+
