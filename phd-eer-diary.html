@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EER Program Diary · PhD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --red: #C41E3A;
+      --red-dark: #9B1630;
+      --red-light: #E8A0AB;
+      --white: #FFFFFF;
+      --off-white: #F8F9FA;
+      --bg: #F5F5F5;
+      --card: #FFFFFF;
+      --text: #1a1a1a;
+      --muted: #5c5c5c;
+      --border: #e0e0e0;
+      --radius: 12px;
+      --transition: 180ms ease-out;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--red-dark);
+    }
+    .header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .progress-track-wrap {
+      margin-bottom: 20px;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .progress-track-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .progress-track-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .progress-track-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--red-dark);
+    }
+    .progress-track-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--off-white);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .progress-track-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--red-light), var(--red));
+      transition: width 0.35s ease-out;
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .tab:hover {
+      color: var(--red-dark);
+      border-color: var(--red-light);
+      background: var(--off-white);
+    }
+    .tab.active {
+      border-color: var(--red);
+      background: var(--red);
+      color: var(--white);
+    }
+    .panel {
+      display: none;
+    }
+    .panel.active {
+      display: block;
+    }
+    .panel-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .requirement-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .req-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .req-card.status-completed {
+      border-left: 4px solid var(--red);
+    }
+    .req-card.status-under_review {
+      border-left: 4px solid var(--red-light);
+    }
+    .req-card.status-started {
+      border-left: 4px solid var(--red-light);
+      opacity: 0.95;
+    }
+    .req-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .req-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+    }
+    .req-type {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--red-light);
+      color: var(--red-dark);
+      background: var(--off-white);
+      white-space: nowrap;
+    }
+    .req-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .req-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+      align-items: center;
+    }
+    .status-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .status-select-wrap label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .status-select {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    .status-select:focus {
+      outline: none;
+      border-color: var(--red);
+    }
+    .status-pct {
+      font-size: 0.75rem;
+      color: var(--red-dark);
+      font-weight: 600;
+    }
+    .btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-note {
+      background: var(--off-white);
+      border-color: var(--border);
+      color: var(--text);
+    }
+    .btn-note:hover {
+      border-color: var(--red);
+      color: var(--red-dark);
+    }
+    .btn-save {
+      background: var(--red);
+      border-color: var(--red-dark);
+      color: var(--white);
+    }
+    .btn-save:hover {
+      box-shadow: 0 2px 8px rgba(196, 30, 58, 0.4);
+      background: var(--red-dark);
+    }
+    .diary-block {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+    .diary-block.hidden {
+      display: none;
+    }
+    .diary-text {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 8px;
+    }
+    .diary-text::placeholder {
+      color: var(--muted);
+    }
+    .diary-preview {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: var(--off-white);
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .diary-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 999;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      background: var(--card);
+      border: 1px solid var(--red);
+      color: var(--text);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .summary-panel .panel-title {
+      margin-bottom: 16px;
+    }
+    .summary-year-group {
+      margin-bottom: 24px;
+    }
+    .summary-year-heading {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--red-dark);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--red-light);
+    }
+    .summary-note-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .summary-note-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--red);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .summary-note-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .summary-note-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .summary-note-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .summary-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>EER Program Diary</h1>
+      <p>Use the tabs for each year and check off requirements; add notes to each.</p>
+    </header>
+
+    <div class="progress-track-wrap" id="progressTrackWrap" aria-label="Program progress">
+      <div class="progress-track-header">
+        <span class="progress-track-label">Overall progress</span>
+        <span class="progress-track-value" id="progressTrackValue">0% weighted progress</span>
+      </div>
+      <div class="progress-track-bar">
+        <div class="progress-track-fill" id="progressTrackFill"></div>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab active" data-year="1" role="tab" aria-selected="true">Year 1</button>
+      <button type="button" class="tab" data-year="2" role="tab" aria-selected="false">Year 2</button>
+      <button type="button" class="tab" data-year="3" role="tab" aria-selected="false">Year 3</button>
+      <button type="button" class="tab" data-year="4" role="tab" aria-selected="false">Year 4</button>
+      <button type="button" class="tab" data-year="summary" role="tab" aria-selected="false">Summary</button>
+    </div>
+
+    <div id="panels">
+      <!-- Filled by JavaScript -->
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const DIARY_STORAGE = "phdEerDiary_v2";
+    var STATUS_PERCENT = { not_started: 0, started: 25, under_review: 50, completed: 100 };
+    var STATUS_LABELS = {
+      not_started: "Not started",
+      started: "Started",
+      under_review: "Under review",
+      completed: "Completed"
+    };
+    const programDefinition = {
+      years: [
+        {
+          id: 1,
+          label: "Year 1 · Launch & Core EER",
+          subtitle: "Start EER core courses, seminars, and sketch your Program of Study.",
+          tasks: [
+            { id: "y1-advisor-meeting", title: "Meet with assigned EER chair", description: "At least one focused 1:1 with your EER chair about expectations, funding, and early goals.", type: "Setup" },
+            { id: "y1-core-eer-start", title: "Begin EER specialization sequence (ENGR 824, 833, 834)", description: "Enrolled in or completed at least one of ENGR 824, 833, or 834.", type: "Coursework" },
+            { id: "y1-seminars-801-802", title: "ENGR 801 / 802 seminar experience", description: "Completed ENGR 801 and/or 802, engaging with EER careers, norms, and networks.", type: "Seminar" },
+            { id: "y1-methods-plan", title: "Select research methods emphasis + first methods course", description: "Chose quantitative, qualitative, or mixed emphasis and enrolled in EDPS 859, 900K, or 870.", type: "Methods" },
+            { id: "y1-engineering-courses-begin", title: "Start engineering discipline coursework (800/900-level)", description: "Began the 12 required credit hours of advanced engineering discipline coursework.", type: "Engineering" },
+            { id: "y1-annual-eval", title: "First EER Annual Evaluation package", description: "By the third Monday in January: progress report, IDP, CV, transcript; discussed with chair.", type: "Milestone" },
+          ],
+        },
+        {
+          id: 2,
+          label: "Year 2 · Finish Core & Qualifying Exam",
+          subtitle: "Complete required courses and pass the Qualifying Exam.",
+          tasks: [
+            { id: "y2-required-courses-done", title: "Qualifying Exam course requirements completed", description: "ENGR 824, 834, 844, EDPS 859, and EDPS 900K with grade B or better.", type: "Coursework" },
+            { id: "y2-program-of-study-forms", title: "Program of Study & Supervisory Committee approved", description: "Forms approved and submitted to Graduate Studies.", type: "Admin" },
+            { id: "y2-qual-intent-package", title: "Qualifying Exam intent + documentation submitted", description: "Declaration of intent and documents sent to EER Graduate Chair by deadline.", type: "Qualifying" },
+            { id: "y2-qual-written-oral", title: "Qualifying Exam (written + oral) completed", description: "2-week written exam and 2-hour oral exam completed; outcome received.", type: "Milestone" },
+            { id: "y2-methods-depth", title: "12-credit Research Methods emphasis complete", description: "12 credits in chosen emphasis (statistics, measurement, qualitative/mixed).", type: "Methods" },
+            { id: "y2-annual-eval", title: "Second EER Annual Evaluation package", description: "Annual evaluation materials submitted and discussed with chair.", type: "Milestone" },
+          ],
+        },
+        {
+          id: 3,
+          label: "Year 3 · Research Pitch, Draft Review & Comprehensive Exam",
+          subtitle: "Shape your dissertation plan and defend the proposal to become a Candidate.",
+          tasks: [
+            { id: "y3-coursework-near-complete", title: "Most coursework completed", description: "Engineering discipline and electives largely completed.", type: "Coursework" },
+            { id: "y3-research-pitch", title: "Research Pitch (3-page outline + meeting)", description: "3-page pitch and full-committee meeting for feedback.", type: "Checkpoint" },
+            { id: "y3-draft-review", title: "Draft Review of Chapters 1–3", description: "Draft Ch. 1–3 shared; 30-min feedback meetings; revision list documented.", type: "Checkpoint" },
+            { id: "y3-comps-intent", title: "Comprehensive Exam intent + documentation", description: "Intent email (transcripts, CV, draft Application for Candidacy) 4 weeks before exam.", type: "Comprehensive" },
+            { id: "y3-comps-written-oral", title: "Comprehensive Exam (proposal defense) passed", description: "Written proposal approved; 2-hour oral exam held; pass outcome.", type: "Milestone" },
+            { id: "y3-annual-eval", title: "Third EER Annual Evaluation package", description: "Annual materials submitted and discussed with chair.", type: "Milestone" },
+          ],
+        },
+        {
+          id: 4,
+          label: "Year 4 · Dissertation, Defense & Graduation",
+          subtitle: "Write, defend, revise, and submit your EER dissertation.",
+          tasks: [
+            { id: "y4-engr999-contracts", title: "ENGR 999 contracts in place", description: "ENGR 999 contract completed each semester of dissertation credits.", type: "Admin" },
+            { id: "y4-program-of-study-updated", title: "Program of Study updated before defense", description: "Program of Study updated in semester before defense; changes approved.", type: "Admin" },
+            { id: "y4-full-dissertation-draft", title: "Full dissertation draft to readers (≥4 weeks before)", description: "Complete draft to two readers at least 4 weeks before defense.", type: "Writing" },
+            { id: "y4-defense-announcement", title: "Public defense announcement (≥2 weeks before)", description: "Announcement (title, abstract, time, date, place) sent to EER Graduate Chair.", type: "Communication" },
+            { id: "y4-final-oral-defense", title: "Final oral dissertation defense completed", description: "2-hour defense (open and closed portions); committee outcome received.", type: "Milestone" },
+            { id: "y4-revisions-and-submission", title: "Revisions completed and dissertation submitted", description: "Revision requests addressed; final dissertation submitted to Graduate Studies.", type: "Milestone" },
+          ],
+        },
+      ],
+    };
+
+    function loadDiaryState() {
+      try {
+        var raw = localStorage.getItem(DIARY_STORAGE);
+        if (!raw) {
+          raw = localStorage.getItem("phdEerDiary_v1");
+          if (raw) {
+            var legacy = JSON.parse(raw);
+            var taskStatus = {};
+            if (legacy.done) {
+              for (var id in legacy.done) {
+                taskStatus[id] = legacy.done[id] ? "completed" : "not_started";
+              }
+            }
+            return {
+              taskStatus: taskStatus,
+              notes: legacy.notes || {},
+            };
+          }
+          return { taskStatus: {}, notes: {} };
+        }
+        var p = JSON.parse(raw);
+        return {
+          taskStatus: p.taskStatus || {},
+          notes: p.notes || {},
+        };
+      } catch (e) {
+        return { taskStatus: {}, notes: {} };
+      }
+    }
+
+    function saveDiaryState(state) {
+      try {
+        localStorage.setItem(DIARY_STORAGE, JSON.stringify({
+          taskStatus: state.taskStatus || {},
+          notes: state.notes || {},
+        }));
+      } catch (_e) {}
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(function() { el.classList.remove("show"); }, 2200);
+    }
+
+    function getTotalTaskCount() {
+      return programDefinition.years.reduce(function(acc, y) { return acc + y.tasks.length; }, 0);
+    }
+
+    function getWeightedProgress(state) {
+      state = state || loadDiaryState();
+      var total = getTotalTaskCount();
+      if (!total) return { sum: 0, pct: 0 };
+      var sum = 0;
+      programDefinition.years.forEach(function(year) {
+        year.tasks.forEach(function(task) {
+          var status = state.taskStatus[task.id] || "not_started";
+          sum += STATUS_PERCENT[status] || 0;
+        });
+      });
+      var maxSum = total * 100;
+      var pct = maxSum ? Math.round((sum / maxSum) * 100) : 0;
+      return { sum: sum, maxSum: maxSum, pct: pct };
+    }
+
+    function updateProgressBar() {
+      var state = loadDiaryState();
+      var total = getTotalTaskCount();
+      var progress = getWeightedProgress(state);
+      var valueEl = document.getElementById("progressTrackValue");
+      var fillEl = document.getElementById("progressTrackFill");
+      if (valueEl) valueEl.textContent = progress.pct + "% weighted progress";
+      if (fillEl) fillEl.style.width = progress.pct + "%";
+    }
+
+    function getTaskById(taskId) {
+      for (var y = 0; y < programDefinition.years.length; y++) {
+        var year = programDefinition.years[y];
+        for (var t = 0; t < year.tasks.length; t++) {
+          if (year.tasks[t].id === taskId) return { year: year, task: year.tasks[t] };
+        }
+      }
+      return null;
+    }
+
+    function renderSummaryPanel() {
+      var container = document.getElementById("summaryPanelContent");
+      if (!container) return;
+      var state = loadDiaryState();
+      container.innerHTML = "";
+      var hasAny = false;
+      programDefinition.years.forEach(function(year) {
+        var notesInYear = [];
+        year.tasks.forEach(function(task) {
+          var note = state.notes[task.id];
+          if (note && note.text && note.text.trim()) {
+            hasAny = true;
+            notesInYear.push({ task: task, note: note });
+          }
+        });
+        if (notesInYear.length === 0) return;
+        var yearGroup = document.createElement("div");
+        yearGroup.className = "summary-year-group";
+        var heading = document.createElement("div");
+        heading.className = "summary-year-heading";
+        heading.textContent = year.label;
+        yearGroup.appendChild(heading);
+        var list = document.createElement("div");
+        list.className = "summary-note-list";
+        notesInYear.forEach(function(item) {
+          var card = document.createElement("div");
+          card.className = "summary-note-card";
+          var titleEl = document.createElement("div");
+          titleEl.className = "summary-note-title";
+          titleEl.textContent = item.task.title;
+          var textEl = document.createElement("div");
+          textEl.className = "summary-note-text";
+          textEl.textContent = item.note.text;
+          var metaEl = document.createElement("div");
+          metaEl.className = "summary-note-meta";
+          metaEl.textContent = "Saved: " + (item.note.date || "—");
+          card.appendChild(titleEl);
+          card.appendChild(textEl);
+          card.appendChild(metaEl);
+          list.appendChild(card);
+        });
+        yearGroup.appendChild(list);
+        container.appendChild(yearGroup);
+      });
+      if (!hasAny) {
+        var empty = document.createElement("div");
+        empty.className = "summary-empty";
+        empty.textContent = "No diary notes yet. Add notes to requirements in Year 1–4 to see them here.";
+        container.appendChild(empty);
+      }
+    }
+
+    function renderPanels() {
+      const container = document.getElementById("panels");
+      container.innerHTML = "";
+      const state = loadDiaryState();
+
+      programDefinition.years.forEach(function(year) {
+        const panel = document.createElement("div");
+        panel.className = "panel" + (year.id === 1 ? " active" : "");
+        panel.id = "panel-year-" + year.id;
+        panel.setAttribute("role", "tabpanel");
+
+        const title = document.createElement("div");
+        title.className = "panel-title";
+        title.textContent = year.label + " — " + year.subtitle;
+        panel.appendChild(title);
+
+        const list = document.createElement("div");
+        list.className = "requirement-list";
+
+        year.tasks.forEach(function(task) {
+          var status = state.taskStatus[task.id] || "not_started";
+          var card = document.createElement("div");
+          card.className = "req-card status-" + status;
+          card.dataset.taskId = task.id;
+
+          var header = document.createElement("div");
+          header.className = "req-header";
+          var titleEl = document.createElement("div");
+          titleEl.className = "req-title";
+          titleEl.textContent = task.title;
+          var typeEl = document.createElement("span");
+          typeEl.className = "req-type";
+          typeEl.textContent = task.type;
+          header.appendChild(titleEl);
+          header.appendChild(typeEl);
+
+          var desc = document.createElement("div");
+          desc.className = "req-desc";
+          desc.textContent = task.description;
+
+          var actions = document.createElement("div");
+          actions.className = "req-actions";
+
+          var statusWrap = document.createElement("div");
+          statusWrap.className = "status-select-wrap";
+          var statusLabel = document.createElement("label");
+          statusLabel.textContent = "Status: ";
+          var statusSelect = document.createElement("select");
+          statusSelect.className = "status-select";
+          statusSelect.dataset.taskId = task.id;
+          ["not_started", "started", "under_review", "completed"].forEach(function(s) {
+            var opt = document.createElement("option");
+            opt.value = s;
+            opt.textContent = STATUS_LABELS[s] + " (" + STATUS_PERCENT[s] + "%)";
+            if (s === status) opt.selected = true;
+            statusSelect.appendChild(opt);
+          });
+          var statusPct = document.createElement("span");
+          statusPct.className = "status-pct";
+          statusPct.textContent = STATUS_PERCENT[status] + "%";
+          statusWrap.appendChild(statusLabel);
+          statusWrap.appendChild(statusSelect);
+          statusWrap.appendChild(statusPct);
+          actions.appendChild(statusWrap);
+
+          var btnNote = document.createElement("button");
+          btnNote.type = "button";
+          btnNote.className = "btn btn-note";
+          btnNote.textContent = "Add diary note";
+          btnNote.dataset.taskId = task.id;
+
+          actions.appendChild(btnNote);
+
+          var diaryBlock = document.createElement("div");
+          diaryBlock.className = "diary-block hidden";
+          diaryBlock.dataset.taskId = task.id;
+
+          var textarea = document.createElement("textarea");
+          textarea.className = "diary-text";
+          textarea.placeholder = "Note what you did, dates, next steps...";
+          textarea.dataset.taskId = task.id;
+          if (state.notes[task.id]) {
+            textarea.value = state.notes[task.id].text || "";
+          }
+
+          var btnSave = document.createElement("button");
+          btnSave.type = "button";
+          btnSave.className = "btn btn-save";
+          btnSave.textContent = "Save note";
+          btnSave.dataset.taskId = task.id;
+
+          var preview = document.createElement("div");
+          preview.className = "diary-preview";
+          preview.dataset.taskId = task.id;
+          if (state.notes[task.id] && state.notes[task.id].text) {
+            preview.textContent = state.notes[task.id].text;
+            var dateSpan = document.createElement("div");
+            dateSpan.className = "diary-date";
+            dateSpan.textContent = "Saved at: " + (state.notes[task.id].date || "");
+            preview.appendChild(dateSpan);
+          }
+
+          diaryBlock.appendChild(textarea);
+          diaryBlock.appendChild(btnSave);
+          diaryBlock.appendChild(preview);
+
+          card.appendChild(header);
+          card.appendChild(desc);
+          card.appendChild(actions);
+          card.appendChild(diaryBlock);
+          list.appendChild(card);
+        });
+
+        panel.appendChild(list);
+        container.appendChild(panel);
+      });
+
+      var summaryPanel = document.createElement("div");
+      summaryPanel.className = "panel";
+      summaryPanel.id = "panel-summary";
+      summaryPanel.setAttribute("role", "tabpanel");
+      var summaryTitle = document.createElement("div");
+      summaryTitle.className = "panel-title";
+      summaryTitle.textContent = "Summary — All diary notes by year";
+      summaryPanel.appendChild(summaryTitle);
+      var summaryContent = document.createElement("div");
+      summaryContent.id = "summaryPanelContent";
+      summaryPanel.appendChild(summaryContent);
+      container.appendChild(summaryPanel);
+
+      renderSummaryPanel();
+      updateProgressBar();
+      bindEvents();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll(".tab").forEach(function(tab) {
+        tab.addEventListener("click", function() {
+          var year = tab.dataset.year;
+          document.querySelectorAll(".tab").forEach(function(t) { t.classList.remove("active"); });
+          document.querySelectorAll(".panel").forEach(function(p) { p.classList.remove("active"); });
+          tab.classList.add("active");
+          if (year === "summary") {
+            var panel = document.getElementById("panel-summary");
+            if (panel) {
+              panel.classList.add("active");
+              renderSummaryPanel();
+            }
+          } else {
+            var panel = document.getElementById("panel-year-" + year);
+            if (panel) panel.classList.add("active");
+          }
+        });
+      });
+
+      document.querySelectorAll(".status-select").forEach(function(sel) {
+        sel.addEventListener("change", function() {
+          var id = sel.dataset.taskId;
+          var s = loadDiaryState();
+          if (!s.taskStatus) s.taskStatus = {};
+          s.taskStatus[id] = sel.value;
+          saveDiaryState(s);
+          var card = sel.closest(".req-card");
+          if (card) {
+            card.className = "req-card status-" + sel.value;
+          }
+          var pctEl = sel.parentNode.querySelector(".status-pct");
+          if (pctEl) pctEl.textContent = STATUS_PERCENT[sel.value] + "%";
+          updateProgressBar();
+          showToast("Status set to " + STATUS_LABELS[sel.value] + ".");
+        });
+      });
+
+      document.querySelectorAll(".btn-note").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.dataset.taskId;
+          var block = document.querySelector('.diary-block[data-task-id="' + id + '"]');
+          if (block) {
+            block.classList.toggle("hidden");
+            if (!block.classList.contains("hidden")) {
+              block.querySelector("textarea").focus();
+            }
+          }
+        });
+      });
+
+      document.querySelectorAll(".btn-save").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+          var id = btn.dataset.taskId;
+          var block = document.querySelector('.diary-block[data-task-id="' + id + '"]');
+          var textarea = block && block.querySelector("textarea");
+          if (!textarea) return;
+          var s = loadDiaryState();
+          if (!s.notes[id]) s.notes[id] = {};
+          s.notes[id].text = textarea.value.trim();
+          s.notes[id].date = new Date().toLocaleString("en-US");
+          saveDiaryState(s);
+          var preview = block.querySelector(".diary-preview");
+          if (preview) {
+            preview.innerHTML = "";
+            preview.textContent = s.notes[id].text || "(No note yet.)";
+            var dateSpan = document.createElement("div");
+            dateSpan.className = "diary-date";
+            dateSpan.textContent = "Saved at: " + s.notes[id].date;
+            preview.appendChild(dateSpan);
+          }
+          renderSummaryPanel();
+          showToast("Note saved.");
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", renderPanels);
+  </script>
+</body>
+</html>
